@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>OmniAssist — Enterprise AI Assistant</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Inter,
+                Segoe UI,
+                Arial,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f8fafc
+                );
+
+            min-height: 100vh;
+            color: #172033;
+        }
+
+        .app {
+            width: min(1100px, 94%);
+            height: 90vh;
+            margin: 5vh auto;
+
+            display: flex;
+            flex-direction: column;
+
+            background: rgba(255, 255, 255, 0.94);
+
+            border: 1px solid #e2e8f0;
+            border-radius: 22px;
+
+            box-shadow:
+                0 20px 60px rgba(15, 23, 42, 0.12);
+
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 22px 28px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 46px;
+            height: 46px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .brand h1 {
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .brand p {
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 8px 12px;
+
+            border-radius: 999px;
+
+            background: #f0fdf4;
+            color: #15803d;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .welcome {
+            max-width: 650px;
+            margin: 40px auto;
+
+            text-align: center;
+        }
+
+        .welcome-icon {
+            font-size: 46px;
+            margin-bottom: 14px;
+        }
+
+        .welcome h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 22px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .bubble {
+            max-width: 75%;
+            padding: 14px 17px;
+
+            border-radius: 16px;
+
+            line-height: 1.55;
+            font-size: 15px;
+            white-space: pre-wrap;
+        }
+
+        .user .bubble {
+            background: #4f46e5;
+            color: white;
+
+            border-bottom-right-radius: 5px;
+        }
+
+        .assistant .bubble {
+            background: #f1f5f9;
+            color: #172033;
+
+            border-bottom-left-radius: 5px;
+        }
+
+        .sources {
+            max-width: 75%;
+            margin-top: 8px;
+            padding: 10px 13px;
+
+            border-left: 3px solid #6366f1;
+
+            background: #f8fafc;
+
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .sources strong {
+            display: block;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+        .input-area {
+            padding: 18px 24px;
+
+            border-top: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 10px;
+
+            max-width: 900px;
+            margin: auto;
+        }
+
+        textarea {
+            flex: 1;
+
+            min-height: 52px;
+            max-height: 140px;
+
+            resize: vertical;
+
+            padding: 15px 17px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 14px;
+
+            outline: none;
+
+            font-family: inherit;
+            font-size: 15px;
+
+            transition: border 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #6366f1;
+        }
+
+        button {
+            min-width: 100px;
+
+            border: none;
+            border-radius: 14px;
+
+            background: #4f46e5;
+            color: white;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.15s,
+                background 0.15s;
+        }
+
+        button:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background: #a5b4fc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hint {
+            max-width: 900px;
+            margin: 8px auto 0;
+
+            color: #94a3b8;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .typing {
+            color: #64748b;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        @media (max-width: 700px) {
+            .app {
+                width: 100%;
+                height: 100vh;
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .header {
+                padding: 16px;
+            }
+
+            .chat {
+                padding: 18px;
+            }
+
+            .bubble,
+            .sources {
+                max-width: 88%;
+            }
+
+            .status {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="logo">
+                O
+            </div>
+
+            <div>
+                <h1>OmniAssist</h1>
+                <p>Enterprise AI Knowledge Assistant</p>
+            </div>
+
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            AI Online
+        </div>
+
+    </header>
+
+
+    <main
+        id="chat"
+        class="chat"
+    >
+
+        <div
+            id="welcome"
+            class="welcome"
+        >
+
+            <div class="welcome-icon">
+                ✨
+            </div>
+
+            <h2>
+                How can I help you?
+            </h2>
+
+            <p>
+                Ask questions about enterprise policies,
+                procedures, IT support, and internal knowledge.
+                OmniAssist retrieves relevant knowledge and
+                generates a grounded answer.
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <section class="input-area">
+
+        <div class="input-box">
+
+            <textarea
+                id="question"
+                placeholder="Ask OmniAssist a question..."
+                rows="1"
+            ></textarea>
+
+            <button
+                id="send"
+                onclick="askOmniAssist()"
+            >
+                Send
+            </button>
+
+        </div>
+
+        <div class="hint">
+            OmniAssist answers using the enterprise knowledge base.
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000/ask";
+
+const questionInput =
+    document.getElementById("question");
+
+const sendButton =
+    document.getElementById("send");
+
+const chat =
+    document.getElementById("chat");
+
+const welcome =
+    document.getElementById("welcome");
+
+
+questionInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+            event.preventDefault();
+
+            askOmniAssist();
+        }
+
+    }
+);
+
+
+function addMessage(
+    text,
+    type,
+    sources = []
+) {
+
+    if (welcome) {
+        welcome.remove();
+    }
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        `message ${type}`;
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "bubble";
+
+    bubble.textContent =
+        text;
+
+    message.appendChild(bubble);
+
+    chat.appendChild(message);
+
+
+    if (
+        type === "assistant" &&
+        sources.length > 0
+    ) {
+
+        const sourceBox =
+            document.createElement("div");
+
+        sourceBox.className =
+            "sources";
+
+        const title =
+            document.createElement("strong");
+
+        title.textContent =
+            "Sources";
+
+        sourceBox.appendChild(title);
+
+
+        const uniqueSources =
+            [
+                ...new Set(
+                    sources.map(
+                        source =>
+                            source.source
+                    )
+                )
+            ];
+
+
+        uniqueSources.forEach(
+            source => {
+
+                const item =
+                    document.createElement("div");
+
+                item.textContent =
+                    source;
+
+                sourceBox.appendChild(item);
+
+            }
+        );
+
+
+        chat.appendChild(sourceBox);
+    }
+
+
+    chat.scrollTop =
+        chat.scrollHeight;
+}
+
+
+function addTypingIndicator() {
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message assistant";
+
+    message.id =
+        "typing";
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "bubble typing";
+
+    bubble.textContent =
+        "OmniAssist is thinking...";
+
+    message.appendChild(bubble);
+
+    chat.appendChild(message);
+
+    chat.scrollTop =
+        chat.scrollHeight;
+}
+
+
+function removeTypingIndicator() {
+
+    const typing =
+        document.getElementById("typing");
+
+    if (typing) {
+        typing.remove();
+    }
+}
+
+
+async function askOmniAssist() {
+
+    const question =
+        questionInput.value.trim();
+
+    if (!question) {
+        return;
+    }
+
+
+    addMessage(
+        question,
+        "user"
+    );
+
+
+    questionInput.value = "";
+
+    sendButton.disabled = true;
+
+    sendButton.textContent =
+        "Thinking...";
+
+
+    addTypingIndicator();
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        question: question
+                    })
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `API returned ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        removeTypingIndicator();
+
+
+        addMessage(
+            data.answer,
+            "assistant",
+            data.sources || []
+        );
+
+
+    } catch (error) {
+
+        removeTypingIndicator();
+
+
+        addMessage(
+            "Sorry, I could not connect to the OmniAssist backend. Make sure the FastAPI server is running.",
+            "assistant"
+        );
+
+
+        console.error(error);
+
+    } finally {
+
+        sendButton.disabled =
+            false;
+
+        sendButton.textContent =
+            "Send";
+
+        questionInput.focus();
+
+    }
+}
+
+</script>
+
+</body>
+</html>

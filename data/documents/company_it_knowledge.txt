@@ -1,0 +1,33 @@
+# OmniAssist Employee IT Knowledge Base
+
+## Password Reset
+
+Employees can reset their corporate password through the Company Identity Portal.
+
+If the password reset fails, contact the IT Service Desk.
+
+## VPN Access
+
+Employees working remotely must connect to the corporate VPN before accessing internal applications.
+
+The VPN client is available through the company software portal.
+
+If VPN authentication fails repeatedly, contact the IT Service Desk.
+
+## Laptop Replacement
+
+Employees with damaged or malfunctioning company laptops should create an IT support request.
+
+The IT team will evaluate the device and determine whether repair or replacement is required.
+
+## Leave Policy
+
+Employees should submit planned leave requests through the HR portal.
+
+Leave requests should be submitted at least three working days before the planned leave whenever possible.
+
+## IT Service Desk
+
+The IT Service Desk handles password issues, VPN problems, laptop failures, and access-related incidents.
+
+Employees should include their employee ID and a clear description of the problem when submitting a support request.
