@@ -6,22 +6,28 @@
     "expected_terms": ["Company Identity Portal", "password reset"]
   },
   {
-    "id": "password-reset-failure",
-    "question": "What should I do if the password reset fails?",
-    "expected_source": "company_it_knowledge.txt",
-    "expected_terms": ["IT Service Desk", "password reset fails"]
+    "id": "password-security",
+    "question": "Should employees share their corporate passwords with colleagues?",
+    "expected_source": "security_policy.txt",
+    "expected_terms": ["passwords", "never be shared"]
   },
   {
     "id": "vpn-remote-access",
     "question": "What is required before a remote employee accesses internal applications?",
-    "expected_source": "company_it_knowledge.txt",
-    "expected_terms": ["corporate VPN", "internal applications"]
+    "expected_source": "remote_work_policy.txt",
+    "expected_terms": ["corporate VPN", "internal company applications"]
   },
   {
     "id": "vpn-client",
     "question": "Where can an employee get the VPN client?",
     "expected_source": "company_it_knowledge.txt",
     "expected_terms": ["software portal", "VPN client"]
+  },
+  {
+    "id": "vpn-security",
+    "question": "Can VPN credentials be shared with another person?",
+    "expected_source": "remote_work_policy.txt",
+    "expected_terms": ["VPN credentials", "must not be shared"]
   },
   {
     "id": "laptop-replacement",
@@ -32,19 +38,37 @@
   {
     "id": "leave-policy",
     "question": "How far in advance should planned leave be submitted?",
-    "expected_source": "company_it_knowledge.txt",
+    "expected_source": "hr_leave_policy.txt",
     "expected_terms": ["HR portal", "three working days"]
+  },
+  {
+    "id": "leave-routing",
+    "question": "Should questions about leave approval be sent to the IT Service Desk?",
+    "expected_source": "hr_leave_policy.txt",
+    "expected_terms": ["HR process", "rather than the IT Service Desk"]
   },
   {
     "id": "service-desk",
     "question": "What information should be included in an IT support request?",
-    "expected_source": "company_it_knowledge.txt",
+    "expected_source": "it_service_desk_policy.txt",
     "expected_terms": ["employee ID", "clear description"]
+  },
+  {
+    "id": "service-desk-scope",
+    "question": "What types of incidents does the IT Service Desk handle?",
+    "expected_source": "it_service_desk_policy.txt",
+    "expected_terms": ["password issues", "VPN problems", "laptop failures"]
   },
   {
     "id": "vpn-failure",
     "question": "Who should I contact if VPN authentication keeps failing?",
     "expected_source": "company_it_knowledge.txt",
     "expected_terms": ["VPN authentication", "IT Service Desk"]
+  },
+  {
+    "id": "access-incident",
+    "question": "What should an employee provide when reporting an access-related incident?",
+    "expected_source": "security_policy.txt",
+    "expected_terms": ["employee ID", "clear description"]
   }
 ]
