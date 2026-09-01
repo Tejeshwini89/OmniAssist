@@ -8,8 +8,11 @@ from src.omniassist.retriever import retrieve_documents
 
 
 OLLAMA_URL = os.getenv(
-    "OMNIASSIST_OLLAMA_URL",
-    "http://localhost:11434/api/generate",
+    "OLLAMA_URL",
+    os.getenv(
+        "OMNIASSIST_OLLAMA_URL",
+        "http://localhost:11434/api/generate",
+    ),
 )
 MODEL_NAME = os.getenv(
     "OMNIASSIST_MODEL",
