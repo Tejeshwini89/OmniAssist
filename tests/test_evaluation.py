@@ -16,10 +16,12 @@ DATASET = Path(__file__).resolve().parents[1] / "evaluation" / "retrieval_datase
 def test_load_evaluation_cases():
     cases = load_evaluation_cases(DATASET)
 
-    assert len(cases) == 8
+    assert len(cases) == 12
     assert cases[0].case_id == "password-reset"
     assert cases[0].expected_source == "company_it_knowledge.txt"
     assert "company identity portal" in cases[0].expected_terms
+    assert cases[1].expected_source == "security_policy.txt"
+    assert cases[6].expected_source == "hr_leave_policy.txt"
 
 
 def test_evaluate_retrieval_calculates_metrics():
