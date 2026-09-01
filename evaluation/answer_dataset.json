@@ -1,0 +1,37 @@
+[
+  {
+    "id": "password-reset",
+    "question": "How can an employee reset their corporate password?",
+    "expected_answer_terms": ["Company Identity Portal", "password reset"],
+    "expected_source": "company_it_knowledge.txt",
+    "should_abstain": false
+  },
+  {
+    "id": "password-sharing",
+    "question": "Should employees share their corporate passwords with colleagues?",
+    "expected_answer_terms": ["never be shared"],
+    "expected_source": "security_policy.txt",
+    "should_abstain": false
+  },
+  {
+    "id": "vpn-remote-access",
+    "question": "What is required before a remote employee accesses internal applications?",
+    "expected_answer_terms": ["corporate VPN", "internal company applications"],
+    "expected_source": "remote_work_policy.txt",
+    "should_abstain": false
+  },
+  {
+    "id": "leave-submission",
+    "question": "How far in advance should planned leave be submitted?",
+    "expected_answer_terms": ["HR portal", "three working days"],
+    "expected_source": "hr_leave_policy.txt",
+    "should_abstain": false
+  },
+  {
+    "id": "unsupported-policy",
+    "question": "What is the company's policy for reimbursement of international business-class flights?",
+    "expected_answer_terms": [],
+    "expected_source": "",
+    "should_abstain": true
+  }
+]
