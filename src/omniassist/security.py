@@ -6,7 +6,7 @@ from typing import Iterable
 
 @dataclass(frozen=True)
 class User:
-    """Authenticated user identity and document-access groups."""
+    """Authenticated identity used for document-level authorization."""
 
     user_id: str
     roles: frozenset[str]
@@ -14,10 +14,12 @@ class User:
 
 
 class AccessPolicy:
-    """Small, explicit authorization layer for retrieved enterprise documents.
+    """Explicit document authorization policy.
 
-    Document metadata may contain ``allowed_roles`` and ``allowed_groups``.
-    A document with neither field is public to authenticated OmniAssist users.
+    Documents may declare ``allowed_roles`` and/or ``allowed_groups`` in
+    metadata. A restricted document is accessible only when the user matches
+    at least one declared role/group. Documents without restrictions are
+    available to authenticated users.
     """
 
     def can_access(self, user: User, metadata: dict) -> bool:
