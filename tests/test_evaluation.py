@@ -55,7 +55,7 @@ def test_evaluate_retrieval_calculates_metrics():
                 metadata={"source": "other.txt"},
             ),
             Document(
-                page_content="Connect to the corporate VPN.",
+                page_content="Connect to the corporate VPN and check authentication.",
                 metadata={"source": "vpn.txt"},
             ),
         ]
