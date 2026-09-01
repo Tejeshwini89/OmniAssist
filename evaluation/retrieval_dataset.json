@@ -1,0 +1,50 @@
+[
+  {
+    "id": "password-reset",
+    "question": "How can an employee reset their corporate password?",
+    "expected_source": "company_it_knowledge.txt",
+    "expected_terms": ["Company Identity Portal", "password reset"]
+  },
+  {
+    "id": "password-reset-failure",
+    "question": "What should I do if the password reset fails?",
+    "expected_source": "company_it_knowledge.txt",
+    "expected_terms": ["IT Service Desk", "password reset fails"]
+  },
+  {
+    "id": "vpn-remote-access",
+    "question": "What is required before a remote employee accesses internal applications?",
+    "expected_source": "company_it_knowledge.txt",
+    "expected_terms": ["corporate VPN", "internal applications"]
+  },
+  {
+    "id": "vpn-client",
+    "question": "Where can an employee get the VPN client?",
+    "expected_source": "company_it_knowledge.txt",
+    "expected_terms": ["software portal", "VPN client"]
+  },
+  {
+    "id": "laptop-replacement",
+    "question": "What should I do with a damaged company laptop?",
+    "expected_source": "company_it_knowledge.txt",
+    "expected_terms": ["IT support request", "repair or replacement"]
+  },
+  {
+    "id": "leave-policy",
+    "question": "How far in advance should planned leave be submitted?",
+    "expected_source": "company_it_knowledge.txt",
+    "expected_terms": ["HR portal", "three working days"]
+  },
+  {
+    "id": "service-desk",
+    "question": "What information should be included in an IT support request?",
+    "expected_source": "company_it_knowledge.txt",
+    "expected_terms": ["employee ID", "clear description"]
+  },
+  {
+    "id": "vpn-failure",
+    "question": "Who should I contact if VPN authentication keeps failing?",
+    "expected_source": "company_it_knowledge.txt",
+    "expected_terms": ["VPN authentication", "IT Service Desk"]
+  }
+]
