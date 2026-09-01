@@ -116,6 +116,6 @@ def test_generator_aggregates_metrics():
 
     assert result["cases"] == 2
     assert result["pass_rate"] == 1.0
-    assert result["source_accuracy"] == 0.5
+    assert result["source_accuracy"] == 1.0
     assert result["groundedness_rate"] == 1.0
     assert result["abstention_accuracy"] == 1.0
