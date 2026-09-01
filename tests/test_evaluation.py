@@ -34,7 +34,7 @@ def test_evaluate_retrieval_calculates_metrics():
             case_id="two",
             question="vpn",
             expected_source="vpn.txt",
-            expected_terms=("corporate vpn",),
+            expected_terms=("corporate vpn", "authentication"),
         ),
     ]
 
