@@ -39,11 +39,31 @@ def test_ask_returns_generated_answer():
     assert response.json()["answer"] == "Use the Company Identity Portal."
 
 
+def test_ask_passes_identity_to_generator():
+    result = {"question": "x", "answer": "x", "sources": []}
+    with patch("src.omniassist.api.generate_answer", return_value=result) as mock:
+        response = client.post(
+            "/ask",
+            json={"question": "x"},
+            headers={
+                "X-User-ID": "alice",
+                "X-User-Roles": "employee,manager",
+                "X-User-Groups": "finance",
+            },
+        )
+    assert response.status_code == 200
+    user = mock.call_args.kwargs["user"]
+    assert user.user_id == "alice"
+    assert user.roles == frozenset({"employee", "manager"})
+    assert user.groups == frozenset({"finance"})
+
+
 def test_ask_strips_question_whitespace():
     with patch("src.omniassist.api.generate_answer", return_value={"question": "x", "answer": "x", "sources": []}) as mock:
         response = client.post("/ask", json={"question": "  How do I reset my password?  "})
     assert response.status_code == 200
-    mock.assert_called_once_with("How do I reset my password?")
+    mock.assert_called_once()
+    assert mock.call_args.args[0] == "How do I reset my password?"
 
 
 def test_ask_rejects_blank_question():
