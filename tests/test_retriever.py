@@ -4,6 +4,7 @@ import pytest
 from langchain_core.documents import Document
 
 from src.omniassist import retriever
+from src.omniassist.security import User
 
 
 def test_retrieve_documents_rejects_empty_query():
@@ -18,53 +19,39 @@ def test_retrieve_documents_rejects_invalid_k():
 
 def test_retrieve_documents_returns_relevant_results():
     mock_store = MagicMock()
-
-    expected = [
-        Document(
-            page_content="Employees can reset their password through the Identity Portal."
-        )
-    ]
-
+    expected = [Document(page_content="Employees can reset their password through the Identity Portal.")]
     mock_store.similarity_search.return_value = expected
 
-    with patch(
-        "src.omniassist.retriever.load_vector_store",
-        return_value=mock_store,
-    ):
-        results = retriever.retrieve_documents(
-            "How do I reset my password?"
-        )
+    with patch("src.omniassist.retriever.load_vector_store", return_value=mock_store):
+        results = retriever.retrieve_documents("How do I reset my password?")
 
     assert len(results) == 1
-    assert results[0].page_content.startswith(
-        "Employees can reset"
-    )
+    assert results[0].page_content.startswith("Employees can reset")
+    mock_store.similarity_search.assert_called_once_with("How do I reset my password?", k=9)
 
-    mock_store.similarity_search.assert_called_once_with(
-        "How do I reset my password?",
-        k=3,
-    )
+
+def test_retrieval_filters_unauthorized_documents():
+    mock_store = MagicMock()
+    mock_store.similarity_search.return_value = [
+        Document(page_content="Finance secret", metadata={"allowed_groups": ["finance"]}),
+        Document(page_content="General policy", metadata={}),
+    ]
+    user = User("alice", frozenset({"employee"}), frozenset())
+
+    with patch("src.omniassist.retriever.load_vector_store", return_value=mock_store):
+        results = retriever.retrieve_documents("policy", user=user)
+
+    assert [doc.page_content for doc in results] == ["General policy"]
 
 
 def test_load_vector_store_fails_when_index_missing():
     retriever.load_vector_store.cache_clear()
-
-    with patch(
-        "pathlib.Path.exists",
-        return_value=False,
-    ):
-        with pytest.raises(
-            RuntimeError,
-            match="Vector index not found",
-        ):
+    with patch("pathlib.Path.exists", return_value=False):
+        with pytest.raises(RuntimeError, match="Vector index not found"):
             retriever.load_vector_store()
 
 
 def test_refresh_vector_store_clears_cache():
-    with patch.object(
-        retriever.load_vector_store,
-        "cache_clear",
-    ) as cache_clear:
+    with patch.object(retriever.load_vector_store, "cache_clear") as cache_clear:
         retriever.refresh_vector_store()
-
     cache_clear.assert_called_once_with()
