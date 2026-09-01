@@ -1,0 +1,10 @@
+# Remote Work Policy
+
+## Remote Access
+Employees working remotely must use the corporate VPN before accessing internal company applications.
+
+## VPN Authentication
+The VPN client is distributed through the company software portal. If authentication fails repeatedly, employees should contact the IT Service Desk.
+
+## Security
+Employees must not share VPN credentials or corporate passwords with another person. Remote work should be performed only from approved devices.
