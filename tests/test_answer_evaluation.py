@@ -85,10 +85,14 @@ def test_supported_case_with_wrong_source_fails():
 
 
 def test_generator_aggregates_metrics():
+    supported_question = "How do I reset my password?"
+    unsupported_question = "What is the international business-class reimbursement policy?"
+
     cases = [
-        make_case(case_id="supported"),
+        make_case(case_id="supported", question=supported_question),
         make_case(
             case_id="unsupported",
+            question=unsupported_question,
             expected_answer_terms=(),
             expected_source="",
             should_abstain=True,
@@ -96,7 +100,7 @@ def test_generator_aggregates_metrics():
     ]
 
     def fake_generate(question):
-        if question == "How do I reset my password?":
+        if question == supported_question:
             return {
                 "answer": "Use the Identity Portal for the password reset.",
                 "sources": [
