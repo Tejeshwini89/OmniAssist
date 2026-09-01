@@ -2,6 +2,8 @@
 
 OmniAssist is an enterprise AI knowledge assistant built using Retrieval-Augmented Generation (RAG).
 
+The project is intentionally being developed beyond a basic chatbot prototype: the goal is to build a measurable, testable, secure, and deployable enterprise-style AI system.
+
 ## Features
 
 - Enterprise document ingestion
@@ -16,6 +18,8 @@ OmniAssist is an enterprise AI knowledge assistant built using Retrieval-Augment
 - Source attribution
 - Grounded responses to reduce hallucination
 - Automated tests with pytest
+- Quantitative retrieval evaluation
+- GitHub Actions CI test pipeline
 
 ## Architecture
 
@@ -49,20 +53,27 @@ OmniAssist/
 │   └── faiss_index/
 ├── data/
 │   └── documents/
+├── evaluation/
+│   └── retrieval_dataset.json
 ├── src/
 │   └── omniassist/
 │       ├── api.py
+│       ├── evaluation.py
 │       ├── generator.py
 │       ├── ingest.py
 │       ├── retriever.py
 │       └── __init__.py
 ├── tests/
 │   ├── test_api.py
+│   ├── test_evaluation.py
 │   ├── test_generator.py
 │   ├── test_ingest.py
 │   └── test_retriever.py
 ├── web/
 │   └── index.html
+├── .github/
+│   └── workflows/
+│       └── tests.yml
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -81,6 +92,7 @@ OmniAssist/
 | LLM | Qwen3:4B |
 | Frontend | HTML/CSS/JavaScript |
 | Testing | Pytest |
+| CI | GitHub Actions |
 
 ## RAG Pipeline
 
@@ -102,7 +114,27 @@ If the required information is not available, the assistant responds:
 
 > I don't have enough information in the enterprise knowledge base to answer that.
 
-This helps reduce hallucination and prevents the model from inventing enterprise policies or procedures.
+This helps reduce hallucinations and prevents the model from inventing enterprise policies or procedures.
+
+## Retrieval Evaluation
+
+OmniAssist now includes a quantitative retrieval evaluation layer in `src/omniassist/evaluation.py`.
+
+The initial evaluation dataset contains eight representative questions covering password reset, VPN access, laptop replacement, leave policy, and IT Service Desk workflows. Each case defines the expected source and evidence terms.
+
+The evaluator reports:
+
+- **Source Hit Rate** — percentage of questions where the expected source appears in the top-K results.
+- **MRR (Mean Reciprocal Rank)** — rewards retrieving the expected source near the top of the ranking.
+- **Evidence Recall** — percentage of expected evidence terms found in the retrieved context.
+
+Run the evaluation locally with:
+
+```powershell
+python -m src.omniassist.evaluation
+```
+
+The current dataset is a baseline evaluation set, not a claim of production-level retrieval quality. As OmniAssist's knowledge base grows, the evaluation set should grow with it and include difficult, ambiguous, and adversarial queries.
 
 ## API
 
@@ -134,11 +166,9 @@ Run the complete test suite:
 python -m pytest -q
 ```
 
-Current test status:
+The repository includes tests for API validation, generation/prompt construction, document ingestion, retrieval behavior, and retrieval evaluation metrics.
 
-```text
-13 passed
-```
+GitHub Actions runs the test suite automatically on pushes to `main` and on pull requests targeting `main`.
 
 ## Running the Application
 
@@ -178,15 +208,31 @@ Frontend:
 http://127.0.0.1:5500
 ```
 
-## Future Improvements
+## Engineering Roadmap
 
-- Authentication and authorization
-- Conversation memory
-- Streaming responses
-- Improved retrieval evaluation
-- Metadata filtering
-- Structured logging
-- Rate limiting
-- Docker deployment
-- Monitoring and observability
-- Support for larger enterprise knowledge bases
+The project is being strengthened in stages rather than by adding superficial features.
+
+### Completed foundation
+
+- End-to-end RAG pipeline
+- Local LLM inference
+- Source attribution
+- Grounded-answer/refusal behavior
+- API and component tests
+- Quantitative retrieval evaluation framework
+- CI test workflow
+
+### Next priorities
+
+- Expand and diversify the retrieval evaluation dataset
+- Add retrieval score inspection and latency measurements
+- Improve retrieval with metadata filtering and reranking where justified by evaluation
+- Add answer-level groundedness and citation evaluation
+- Add structured logging and request tracing
+- Add robust LLM/retrieval error handling
+- Add authentication and document-level authorization
+- Add rate limiting and security hardening
+- Containerize the full application workflow
+- Add deployment, monitoring, and observability
+
+The goal is a production-style enterprise AI system whose quality can be demonstrated with evidence, not just a working demo.
