@@ -1,0 +1,10 @@
+# Information Security Policy
+
+## Password Security
+Corporate passwords must be kept confidential and must never be shared with colleagues. Employees should use the Company Identity Portal for password changes and resets.
+
+## Access Control
+Access to internal applications must use approved corporate authentication mechanisms. Access-related incidents should be reported to the IT Service Desk with an employee ID and a clear description of the issue.
+
+## Remote Security
+Remote employees must connect through the corporate VPN before accessing internal applications. VPN credentials must not be shared.
