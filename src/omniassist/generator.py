@@ -1,12 +1,20 @@
 from __future__ import annotations
 
+import os
+
 import requests
 
 from src.omniassist.retriever import retrieve_documents
 
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "qwen3:4b"
+OLLAMA_URL = os.getenv(
+    "OMNIASSIST_OLLAMA_URL",
+    "http://localhost:11434/api/generate",
+)
+MODEL_NAME = os.getenv(
+    "OMNIASSIST_MODEL",
+    "qwen3:4b",
+)
 
 
 def build_context(documents) -> str:
