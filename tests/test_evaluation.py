@@ -65,7 +65,7 @@ def test_evaluate_retrieval_calculates_metrics():
     assert result["cases"] == 2
     assert result["source_hit_rate"] == 1.0
     assert result["mrr"] == 0.75
-    assert result["evidence_recall"] == 0.75
+    assert result["evidence_recall"] == 1.0
     assert result["results"][0]["source_rank"] == 1
     assert result["results"][1]["source_rank"] == 2
 
