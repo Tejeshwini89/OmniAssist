@@ -11,6 +11,11 @@ def test_retrieve_documents_rejects_empty_query():
         retriever.retrieve_documents("   ")
 
 
+def test_retrieve_documents_rejects_invalid_k():
+    with pytest.raises(ValueError, match="k must be at least 1"):
+        retriever.retrieve_documents("password", k=0)
+
+
 def test_retrieve_documents_returns_relevant_results():
     mock_store = MagicMock()
 
@@ -42,12 +47,24 @@ def test_retrieve_documents_returns_relevant_results():
 
 
 def test_load_vector_store_fails_when_index_missing():
+    retriever.load_vector_store.cache_clear()
+
     with patch(
-    "pathlib.Path.exists",
-    return_value=False,
-):
+        "pathlib.Path.exists",
+        return_value=False,
+    ):
         with pytest.raises(
             RuntimeError,
             match="Vector index not found",
         ):
             retriever.load_vector_store()
+
+
+def test_refresh_vector_store_clears_cache():
+    with patch.object(
+        retriever.load_vector_store,
+        "cache_clear",
+    ) as cache_clear:
+        retriever.refresh_vector_store()
+
+    cache_clear.assert_called_once_with()
