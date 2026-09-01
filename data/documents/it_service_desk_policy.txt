@@ -1,0 +1,10 @@
+# IT Service Desk Policy
+
+## Supported Incidents
+The IT Service Desk handles password issues, VPN problems, laptop failures, and access-related incidents.
+
+## Support Requests
+Employees should include their employee ID and a clear description of the problem when submitting an IT support request.
+
+## Escalation
+If a password reset fails or VPN authentication fails repeatedly, employees should contact the IT Service Desk. For damaged or malfunctioning company laptops, employees should create an IT support request so the IT team can determine whether repair or replacement is required.
