@@ -70,10 +70,17 @@ def evaluate_answer(
     abstained = ABSTENTION_PHRASE.lower() in normalized_answer
     abstention_correct = abstained == case.should_abstain
 
+    context = "\n".join(str(source.get("content", "")).lower() for source in sources)
     groundedness = (
-        all(term in "\n".join(str(source.get("content", "")).lower() for source in sources) for term in matched_terms)
+        all(term in context for term in matched_terms)
         if matched_terms
         else (abstained or not case.expected_answer_terms)
+    )
+
+    passed = (
+        bool(abstention_correct and abstained)
+        if case.should_abstain
+        else bool(source_correct and abstention_correct and answer_coverage == 1.0 and groundedness)
     )
 
     return {
@@ -85,12 +92,7 @@ def evaluate_answer(
         "abstention_correct": abstention_correct,
         "abstained": abstained,
         "groundedness": bool(groundedness),
-        "passed": bool(
-            source_correct
-            and abstention_correct
-            and answer_coverage == 1.0
-            and groundedness
-        ) if not case.should_abstain else bool(abstention_correct and abstained),
+        "passed": passed,
     }
 
 
@@ -108,13 +110,16 @@ def evaluate_generator(
         results.append(evaluate_answer(case, result.get("answer", ""), result.get("sources", [])))
 
     total = len(results)
+    supported = [r for r, case in zip(results, cases) if not case.should_abstain]
+    abstention_cases = [r for r, case in zip(results, cases) if case.should_abstain]
+
     return {
         "cases": total,
         "pass_rate": round(sum(r["passed"] for r in results) / total, 4),
-        "answer_coverage": round(sum(r["answer_coverage"] for r in results) / total, 4),
-        "source_accuracy": round(sum(r["source_correct"] for r in results) / total, 4),
-        "groundedness_rate": round(sum(r["groundedness"] for r in results) / total, 4),
-        "abstention_accuracy": round(sum(r["abstention_correct"] for r in results) / total, 4),
+        "answer_coverage": round(sum(r["answer_coverage"] for r in supported) / len(supported), 4) if supported else 1.0,
+        "source_accuracy": round(sum(r["source_correct"] for r in supported) / len(supported), 4) if supported else 1.0,
+        "groundedness_rate": round(sum(r["groundedness"] for r in supported) / len(supported), 4) if supported else 1.0,
+        "abstention_accuracy": round(sum(r["abstention_correct"] for r in abstention_cases) / len(abstention_cases), 4) if abstention_cases else 1.0,
         "results": results,
     }
 
