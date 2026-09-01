@@ -13,34 +13,32 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
 from src.omniassist.generator import generate_answer
-
+from src.omniassist.security import user_from_headers
 
 logger = logging.getLogger("omniassist")
 
 app = FastAPI(
     title="OmniAssist",
     description="Enterprise GenAI Assistant using RAG",
-    version="1.2.0",
+    version="1.3.0",
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-    ],
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
     allow_credentials=False,
     allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type", "X-Request-ID"],
+    allow_headers=[
+        "Content-Type",
+        "X-Request-ID",
+        "X-User-ID",
+        "X-User-Roles",
+        "X-User-Groups",
+    ],
 )
 
 
 class AskRequest(BaseModel):
-    question: str = Field(
-        ...,
-        min_length=1,
-        max_length=2000,
-        description="Question to ask OmniAssist",
-    )
+    question: str = Field(..., min_length=1, max_length=2000)
 
     @field_validator("question")
     @classmethod
@@ -58,7 +56,7 @@ class AskResponse(BaseModel):
 
 
 class RateLimiter:
-    """Small process-local limiter for accidental or abusive request bursts."""
+    """Process-local limiter for accidental or abusive request bursts."""
 
     def __init__(self, limit: int = 30, window_seconds: int = 60):
         self.limit = limit
@@ -91,7 +89,6 @@ async def request_observability(request: Request, call_next):
     request_id = _request_id(request)
     request.state.request_id = request_id
     started = time.perf_counter()
-
     try:
         response = await call_next(request)
     except Exception:
@@ -105,7 +102,6 @@ async def request_observability(request: Request, call_next):
             status_code=500,
             content={"detail": "An unexpected server error occurred."},
         )
-
     elapsed_ms = round((time.perf_counter() - started) * 1000, 2)
     response.headers["X-Request-ID"] = request_id
     response.headers["X-Process-Time-ms"] = str(elapsed_ms)
@@ -122,10 +118,7 @@ async def request_observability(request: Request, call_next):
 
 @app.get("/health")
 def health():
-    return {
-        "status": "ok",
-        "service": "OmniAssist",
-    }
+    return {"status": "ok", "service": "OmniAssist"}
 
 
 @app.get("/metrics")
@@ -143,21 +136,24 @@ def metrics():
 def ask(request: AskRequest, http_request: Request):
     client_key = http_request.client.host if http_request.client else "unknown"
     if not rate_limiter.allow(client_key):
-        raise HTTPException(
-            status_code=429,
-            detail="Too many requests. Please try again later.",
-        )
+        raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
 
+    user = user_from_headers(
+        http_request.headers.get("X-User-ID"),
+        http_request.headers.get("X-User-Roles"),
+        http_request.headers.get("X-User-Groups"),
+    )
     try:
-        return generate_answer(request.question)
+        return generate_answer(request.question, user=user)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception(
-            "answer_generation_failed request_id=%s",
+            "answer_generation_failed request_id=%s user_id=%s",
             getattr(http_request.state, "request_id", "unknown"),
+            user.user_id,
         )
         raise HTTPException(
             status_code=502,
