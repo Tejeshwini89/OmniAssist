@@ -1,0 +1,10 @@
+# HR Leave Policy
+
+## Planned Leave
+Employees should submit planned leave requests through the HR portal at least three working days before the planned leave whenever possible.
+
+## Leave Changes
+Employees who need to change a submitted leave request should use the HR portal and follow the workflow provided there.
+
+## Support
+Questions about leave approval or HR workflows should be directed through the appropriate HR process rather than the IT Service Desk.
